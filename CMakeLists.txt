@@ -33,6 +33,8 @@ add_executable(cask_core_tests
     spec/ecs/entity_table_spec.cpp
     spec/ecs/entity_compactor_spec.cpp
     spec/ecs/ecs_integration_spec.cpp
+    spec/ecs/interpolated_spec.cpp
+    spec/ecs/frame_advancer_spec.cpp
 )
 target_link_libraries(cask_core_tests PRIVATE cask_core Catch2::Catch2WithMain)
 
