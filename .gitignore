@@ -1,0 +1,9 @@
+build/
+.cache/
+cmake-build-*/
+compile_commands.json
+*.o
+*.so
+*.dylib
+*.dll
+.DS_Store
