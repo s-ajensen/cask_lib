@@ -36,6 +36,7 @@ add_executable(cask_core_tests
     spec/ecs/interpolated_spec.cpp
     spec/ecs/frame_advancer_spec.cpp
     spec/resource/resource_store_spec.cpp
+    spec/resource/mesh_data_spec.cpp
 )
 target_link_libraries(cask_core_tests PRIVATE cask_core Catch2::Catch2WithMain)
 
