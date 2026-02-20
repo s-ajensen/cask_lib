@@ -1,4 +1,4 @@
-# cask_lib
+# cask_core
 
 Header-only C++20 library providing ECS, events, and resource management for the Cask game engine.
 

@@ -8,11 +8,19 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 include(FetchContent)
 
 FetchContent_Declare(
-    cask_redux
-    GIT_REPOSITORY git@github.com:s-ajensen/cask_redux.git
+    cask_engine
+    GIT_REPOSITORY git@github.com:s-ajensen/cask_engine.git
     GIT_TAG master
 )
-FetchContent_MakeAvailable(cask_redux)
+FetchContent_MakeAvailable(cask_engine)
+
+FetchContent_Declare(
+    stduuid
+    GIT_REPOSITORY https://github.com/mariusbancila/stduuid.git
+    GIT_TAG v1.2.3
+)
+set(UUID_USING_CXX20_SPAN ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(stduuid)
 
 FetchContent_Declare(
     Catch2
@@ -23,7 +31,7 @@ FetchContent_MakeAvailable(Catch2)
 
 add_library(cask_core INTERFACE)
 target_include_directories(cask_core INTERFACE include)
-target_link_libraries(cask_core INTERFACE cask_redux)
+target_link_libraries(cask_core INTERFACE cask_engine stduuid)
 
 add_executable(cask_core_tests
     spec/event/event_queue_spec.cpp
@@ -39,6 +47,8 @@ add_executable(cask_core_tests
     spec/resource/mesh_data_spec.cpp
     spec/resource/texture_data_spec.cpp
     spec/resource/resource_handle_spec.cpp
+    spec/identity/uuid_spec.cpp
+    spec/identity/entity_registry_spec.cpp
 )
 target_link_libraries(cask_core_tests PRIVATE cask_core Catch2::Catch2WithMain)
 
