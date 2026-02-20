@@ -58,4 +58,11 @@ struct EntityRegistry {
     size_t size() const {
         return entity_to_uuid_.size();
     }
+
+    template<typename Fn>
+    void each(Fn callback) const {
+        for (const auto& [entity, uuid] : entity_to_uuid_) {
+            callback(entity, uuid);
+        }
+    }
 };

@@ -18,6 +18,13 @@ struct ComponentStore {
         index_to_entity_[index] = entity;
     }
 
+    template<typename Fn>
+    void each(Fn callback) const {
+        for (const auto& [entity, index] : entity_to_index_) {
+            callback(entity, dense_[index]);
+        }
+    }
+
     Component& get(uint32_t entity) {
         return dense_[entity_to_index_[entity]];
     }

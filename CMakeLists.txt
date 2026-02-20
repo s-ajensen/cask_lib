@@ -23,6 +23,13 @@ set(UUID_USING_CXX20_SPAN ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(stduuid)
 
 FetchContent_Declare(
+    nlohmann_json
+    GIT_REPOSITORY https://github.com/nlohmann/json.git
+    GIT_TAG v3.11.3
+)
+FetchContent_MakeAvailable(nlohmann_json)
+
+FetchContent_Declare(
     Catch2
     GIT_REPOSITORY https://github.com/catchorg/Catch2.git
     GIT_TAG v3.4.0
@@ -31,7 +38,7 @@ FetchContent_MakeAvailable(Catch2)
 
 add_library(cask_core INTERFACE)
 target_include_directories(cask_core INTERFACE include)
-target_link_libraries(cask_core INTERFACE cask_engine stduuid)
+target_link_libraries(cask_core INTERFACE cask_engine stduuid nlohmann_json::nlohmann_json)
 
 add_executable(cask_core_tests
     spec/event/event_queue_spec.cpp
@@ -49,6 +56,14 @@ add_executable(cask_core_tests
     spec/resource/resource_handle_spec.cpp
     spec/identity/uuid_spec.cpp
     spec/identity/entity_registry_spec.cpp
+    spec/schema/type_name_spec.cpp
+    spec/schema/serialization_registry_spec.cpp
+    spec/schema/describe_spec.cpp
+    spec/schema/component_store_serialization_spec.cpp
+    spec/schema/entity_registry_serialization_spec.cpp
+    spec/schema/loader_spec.cpp
+    spec/schema/saver_spec.cpp
+    spec/schema/cask_component_spec.cpp
 )
 target_link_libraries(cask_core_tests PRIVATE cask_core Catch2::Catch2WithMain)
 

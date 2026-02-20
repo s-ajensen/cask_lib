@@ -43,6 +43,47 @@ SCENARIO("type-erased removal deletes entity from store", "[component_store]") {
     }
 }
 
+SCENARIO("component store iterates all entity-value pairs", "[component_store]") {
+    GIVEN("a component store with data for three entities") {
+        ComponentStore<Position> store;
+        store.insert(10, Position{1.0f, 2.0f});
+        store.insert(20, Position{3.0f, 4.0f});
+        store.insert(30, Position{5.0f, 6.0f});
+
+        WHEN("each is called with a callback") {
+            std::unordered_map<uint32_t, Position> visited;
+            store.each([&visited](uint32_t entity, const Position& pos) {
+                visited[entity] = pos;
+            });
+
+            THEN("all entity-value pairs are visited") {
+                REQUIRE(visited.size() == 3);
+                REQUIRE(visited[10].x == 1.0f);
+                REQUIRE(visited[10].y == 2.0f);
+                REQUIRE(visited[20].x == 3.0f);
+                REQUIRE(visited[20].y == 4.0f);
+                REQUIRE(visited[30].x == 5.0f);
+                REQUIRE(visited[30].y == 6.0f);
+            }
+        }
+    }
+}
+
+SCENARIO("component store each on empty store visits nothing", "[component_store]") {
+    GIVEN("an empty component store") {
+        ComponentStore<Position> store;
+
+        WHEN("each is called") {
+            size_t count = 0;
+            store.each([&count](uint32_t, const Position&) { ++count; });
+
+            THEN("no entities are visited") {
+                REQUIRE(count == 0);
+            }
+        }
+    }
+}
+
 SCENARIO("component store compacts on removal", "[component_store]") {
     GIVEN("a component store with data for three entities") {
         ComponentStore<Position> store;
