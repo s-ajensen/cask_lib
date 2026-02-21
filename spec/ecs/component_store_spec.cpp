@@ -110,3 +110,48 @@ SCENARIO("component store compacts on removal", "[component_store]") {
         }
     }
 }
+
+SCENARIO("has returns false for an entity not in the store", "[component_store]") {
+    GIVEN("an empty component store") {
+        ComponentStore<Position> store;
+
+        WHEN("has is called with a nonexistent entity") {
+            bool result = store.has(42);
+
+            THEN("it returns false") {
+                REQUIRE_FALSE(result);
+            }
+        }
+    }
+}
+
+SCENARIO("has returns true after insert", "[component_store]") {
+    GIVEN("a component store with an entity inserted") {
+        ComponentStore<Position> store;
+        store.insert(42, Position{1.0f, 2.0f});
+
+        WHEN("has is called with the inserted entity") {
+            bool result = store.has(42);
+
+            THEN("it returns true") {
+                REQUIRE(result);
+            }
+        }
+    }
+}
+
+SCENARIO("has returns false after remove", "[component_store]") {
+    GIVEN("a component store where an entity was inserted then removed") {
+        ComponentStore<Position> store;
+        store.insert(42, Position{1.0f, 2.0f});
+        store.remove(42);
+
+        WHEN("has is called with the removed entity") {
+            bool result = store.has(42);
+
+            THEN("it returns false") {
+                REQUIRE_FALSE(result);
+            }
+        }
+    }
+}

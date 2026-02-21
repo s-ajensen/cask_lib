@@ -97,3 +97,70 @@ SCENARIO("destroyed entity IDs are recycled", "[entity_table]") {
         }
     }
 }
+
+SCENARIO("removing a component bit unsets it in the signature", "[entity_table]") {
+    GIVEN("an entity with component bit 3 set") {
+        EntityTable table;
+        auto entity = table.create();
+        uint32_t HEALTH = 3;
+        table.add_component(entity, HEALTH);
+
+        REQUIRE(table.signatures_[entity].test(HEALTH));
+
+        WHEN("the component is removed") {
+            table.remove_component(entity, HEALTH);
+
+            THEN("the bit is no longer set") {
+                REQUIRE_FALSE(table.signatures_[entity].test(HEALTH));
+            }
+        }
+    }
+}
+
+SCENARIO("entity no longer matches queries requiring removed component", "[entity_table]") {
+    GIVEN("an entity with components on bits 1 and 2") {
+        EntityTable table;
+        auto entity = table.create();
+        uint32_t VELOCITY = 1;
+        uint32_t MESH = 2;
+        table.add_component(entity, VELOCITY);
+        table.add_component(entity, MESH);
+
+        WHEN("component 2 is removed") {
+            table.remove_component(entity, MESH);
+
+            THEN("it no longer matches a query requiring both bits") {
+                Signature both;
+                both.set(VELOCITY);
+                both.set(MESH);
+                auto& results = table.query(both);
+                REQUIRE(results.empty());
+            }
+
+            THEN("it still matches a query requiring only bit 1") {
+                Signature just_velocity;
+                just_velocity.set(VELOCITY);
+                auto& results = table.query(just_velocity);
+                REQUIRE(results.size() == 1);
+                REQUIRE(results[0] == entity);
+            }
+        }
+    }
+}
+
+SCENARIO("removing a bit that was never set is a no-op", "[entity_table]") {
+    GIVEN("an entity with no components") {
+        EntityTable table;
+        auto entity = table.create();
+        uint32_t SPRITE = 5;
+        auto signature_before = table.signatures_[entity];
+
+        WHEN("a never-set bit is removed") {
+            table.remove_component(entity, SPRITE);
+
+            THEN("the signature is unchanged") {
+                REQUIRE(table.signatures_[entity] == signature_before);
+            }
+        }
+    }
+}

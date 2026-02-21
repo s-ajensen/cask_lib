@@ -42,6 +42,10 @@ struct EntityTable {
         signatures_[entity].set(component_bit);
     }
 
+    void remove_component(uint32_t entity, uint32_t component_bit) {
+        signatures_[entity].reset(component_bit);
+    }
+
     const std::vector<uint32_t>& query(const Signature& query_sig) {
         query_results_.clear();
         for (auto& [entity, entity_sig] : signatures_) {

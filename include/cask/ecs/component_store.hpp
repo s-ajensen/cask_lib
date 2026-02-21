@@ -25,6 +25,10 @@ struct ComponentStore {
         }
     }
 
+    bool has(uint32_t entity) const {
+        return entity_to_index_.count(entity) > 0;
+    }
+
     Component& get(uint32_t entity) {
         return dense_[entity_to_index_[entity]];
     }
